@@ -82,6 +82,16 @@ const T& Matrix<T, Rows, Cols>::operator()(size_t row, size_t col) const {
 }
 
 template <typename T, size_t Rows, size_t Cols>
+void Matrix<T, Rows, Cols>::set(size_t row, size_t col, T value) {
+    data_[row * Cols + col] = value;
+}
+
+template <typename T, size_t Rows, size_t Cols>
+T Matrix<T, Rows, Cols>::get(size_t row, size_t col) const {
+    return data_[row * Cols + col];
+}
+
+template <typename T, size_t Rows, size_t Cols>
 const T* Matrix<T, Rows, Cols>::raw() const {
     return data_;
 }
@@ -256,8 +266,8 @@ bool Matrix<T, Rows, Cols>::inverse(Matrix& out, T epsilon) const {
 }
 
 template <typename T, size_t Rows, size_t Cols>
-bool Matrix<T, Rows, Cols>::tryCholeskyInverse(const Matrix& input,
-                                               Matrix& out, T epsilon) {
+bool Matrix<T, Rows, Cols>::tryCholeskyInverse(const Matrix& input, Matrix& out,
+                                               T epsilon) {
     if (Rows != Cols || Rows == 0) {
         return false;
     }
@@ -281,8 +291,7 @@ bool Matrix<T, Rows, Cols>::tryCholeskyInverse(const Matrix& input,
 }
 
 template <typename T, size_t Rows, size_t Cols>
-bool Matrix<T, Rows, Cols>::isSymmetricMatrix(const Matrix& matrix,
-                                              T epsilon) {
+bool Matrix<T, Rows, Cols>::isSymmetricMatrix(const Matrix& matrix, T epsilon) {
     if (Rows != Cols) {
         return false;
     }
@@ -323,8 +332,7 @@ bool Matrix<T, Rows, Cols>::choleskyDecompose(Matrix& matrix, T* diag,
 }
 
 template <typename T, size_t Rows, size_t Cols>
-void Matrix<T, Rows, Cols>::choleskyInvertLower(Matrix& matrix,
-                                                const T* diag) {
+void Matrix<T, Rows, Cols>::choleskyInvertLower(Matrix& matrix, const T* diag) {
     for (size_t i = 0; i < Rows; ++i) {
         matrix(i, i) = static_cast<T>(1) / diag[i];
         for (size_t j = i + 1; j < Rows; ++j) {

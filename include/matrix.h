@@ -24,6 +24,8 @@ class Matrix {
 
     T& operator()(size_t row, size_t col);
     const T& operator()(size_t row, size_t col) const;
+    void set(size_t row, size_t col, T value);
+    T get(size_t row, size_t col) const;
 
     const T* raw() const;
     T* raw();
@@ -53,8 +55,7 @@ class Matrix {
     static void scaleRow(Matrix& matrix, size_t row, T scalar);
     static void subtractRow(Matrix& matrix, size_t target, size_t pivot,
                             T factor);
-    static bool tryCholeskyInverse(const Matrix& input, Matrix& out,
-                                   T epsilon);
+    static bool tryCholeskyInverse(const Matrix& input, Matrix& out, T epsilon);
     static bool isSymmetricMatrix(const Matrix& matrix, T epsilon);
     static bool choleskyDecompose(Matrix& matrix, T* diag, T epsilon);
     static void choleskyInvertLower(Matrix& matrix, const T* diag);

@@ -124,6 +124,113 @@ ExtendedKalmanFilter<T, StateDim, MeasurementDim, ControlDim>::kalmanGain()
 
 template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
 void ExtendedKalmanFilter<T, StateDim, MeasurementDim,
+                          ControlDim>::setStateValue(size_t row, size_t col,
+                                                     T value) {
+    state_.set(row, col, value);
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+T ExtendedKalmanFilter<T, StateDim, MeasurementDim, ControlDim>::getStateValue(
+    size_t row, size_t col) const {
+    return state_.get(row, col);
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+void ExtendedKalmanFilter<T, StateDim, MeasurementDim,
+                          ControlDim>::setCovarianceValue(size_t row,
+                                                          size_t col, T value) {
+    covariance_.set(row, col, value);
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+T ExtendedKalmanFilter<T, StateDim, MeasurementDim,
+                       ControlDim>::getCovarianceValue(size_t row,
+                                                       size_t col) const {
+    return covariance_.get(row, col);
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+void ExtendedKalmanFilter<T, StateDim, MeasurementDim,
+                          ControlDim>::setProcessNoiseValue(size_t row,
+                                                            size_t col,
+                                                            T value) {
+    process_noise_.set(row, col, value);
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+T ExtendedKalmanFilter<T, StateDim, MeasurementDim,
+                       ControlDim>::getProcessNoiseValue(size_t row,
+                                                         size_t col) const {
+    return process_noise_.get(row, col);
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+void ExtendedKalmanFilter<T, StateDim, MeasurementDim,
+                          ControlDim>::setMeasurementNoiseValue(size_t row,
+                                                                size_t col,
+                                                                T value) {
+    measurement_noise_.set(row, col, value);
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+T ExtendedKalmanFilter<T, StateDim, MeasurementDim,
+                       ControlDim>::getMeasurementNoiseValue(size_t row,
+                                                             size_t col) const {
+    return measurement_noise_.get(row, col);
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+void ExtendedKalmanFilter<T, StateDim, MeasurementDim,
+                          ControlDim>::setTransitionValue(size_t row,
+                                                          size_t col, T value) {
+    transition_matrix_.set(row, col, value);
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+T ExtendedKalmanFilter<T, StateDim, MeasurementDim,
+                       ControlDim>::getTransitionValue(size_t row,
+                                                       size_t col) const {
+    return transition_matrix_.get(row, col);
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+void ExtendedKalmanFilter<T, StateDim, MeasurementDim,
+                          ControlDim>::setControlValue(size_t row, size_t col,
+                                                       T value) {
+    control_matrix_.set(row, col, value);
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+T ExtendedKalmanFilter<T, StateDim, MeasurementDim,
+                       ControlDim>::getControlValue(size_t row,
+                                                    size_t col) const {
+    return control_matrix_.get(row, col);
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+void ExtendedKalmanFilter<T, StateDim, MeasurementDim,
+                          ControlDim>::setMeasurementValue(size_t row,
+                                                           size_t col,
+                                                           T value) {
+    measurement_matrix_.set(row, col, value);
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+T ExtendedKalmanFilter<T, StateDim, MeasurementDim,
+                       ControlDim>::getMeasurementValue(size_t row,
+                                                        size_t col) const {
+    return measurement_matrix_.get(row, col);
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+T ExtendedKalmanFilter<T, StateDim, MeasurementDim,
+                       ControlDim>::getKalmanGainValue(size_t row,
+                                                       size_t col) const {
+    return kalman_gain_.get(row, col);
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+void ExtendedKalmanFilter<T, StateDim, MeasurementDim,
                           ControlDim>::setProcessModel(ProcessModel model) {
     process_model_ = model;
 }
