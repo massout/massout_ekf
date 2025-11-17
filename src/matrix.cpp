@@ -204,6 +204,10 @@ bool Matrix<T, Rows, Cols>::inverse(Matrix& out, T epsilon) const {
         return false;
     }
 
+    if (tryCholeskyInverse(*this, out, epsilon)) {
+        return true;
+    }
+
     Matrix working(*this);
     Matrix identity = Matrix::Identity();
 
@@ -249,6 +253,156 @@ bool Matrix<T, Rows, Cols>::inverse(Matrix& out, T epsilon) const {
 
     out = identity;
     return true;
+}
+
+template <typename T, size_t Rows, size_t Cols>
+bool Matrix<T, Rows, Cols>::tryCholeskyInverse(const Matrix& input,
+                                               Matrix& out, T epsilon) {
+    if (Rows != Cols || Rows == 0) {
+        return false;
+    }
+
+    if (!isSymmetricMatrix(input, epsilon)) {
+        return false;
+    }
+
+    const size_t diag_size = Rows == 0 ? 1 : Rows;
+    T diag[diag_size];
+    Matrix lower(input);
+
+    if (!choleskyDecompose(lower, diag, epsilon)) {
+        return false;
+    }
+
+    choleskyInvertLower(lower, diag);
+    choleskyCompleteInverse(lower);
+    out = lower;
+    return true;
+}
+
+template <typename T, size_t Rows, size_t Cols>
+bool Matrix<T, Rows, Cols>::isSymmetricMatrix(const Matrix& matrix,
+                                              T epsilon) {
+    if (Rows != Cols) {
+        return false;
+    }
+
+    for (size_t r = 0; r < Rows; ++r) {
+        for (size_t c = r + 1; c < Cols; ++c) {
+            if (absolute(matrix(r, c) - matrix(c, r)) > epsilon) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+template <typename T, size_t Rows, size_t Cols>
+bool Matrix<T, Rows, Cols>::choleskyDecompose(Matrix& matrix, T* diag,
+                                              T epsilon) {
+    for (size_t i = 0; i < Rows; ++i) {
+        for (size_t j = i; j < Rows; ++j) {
+            T sum = matrix(i, j);
+            for (size_t k = 0; k < i; ++k) {
+                sum -= matrix(i, k) * matrix(j, k);
+            }
+
+            if (i == j) {
+                if (sum <= epsilon) {
+                    return false;
+                }
+                diag[i] = fastSqrt(sum);
+            } else {
+                matrix(j, i) = sum / diag[i];
+            }
+        }
+    }
+
+    return true;
+}
+
+template <typename T, size_t Rows, size_t Cols>
+void Matrix<T, Rows, Cols>::choleskyInvertLower(Matrix& matrix,
+                                                const T* diag) {
+    for (size_t i = 0; i < Rows; ++i) {
+        matrix(i, i) = static_cast<T>(1) / diag[i];
+        for (size_t j = i + 1; j < Rows; ++j) {
+            T sum = static_cast<T>(0);
+            for (size_t k = i; k < j; ++k) {
+                sum -= matrix(j, k) * matrix(k, i);
+            }
+            matrix(j, i) = sum / diag[j];
+        }
+    }
+}
+
+template <typename T, size_t Rows, size_t Cols>
+void Matrix<T, Rows, Cols>::choleskyCompleteInverse(Matrix& matrix) {
+    for (size_t i = 0; i < Rows; ++i) {
+        for (size_t j = i + 1; j < Rows; ++j) {
+            matrix(i, j) = static_cast<T>(0);
+        }
+    }
+
+    for (size_t i = 0; i < Rows; ++i) {
+        matrix(i, i) *= matrix(i, i);
+        for (size_t k = i + 1; k < Rows; ++k) {
+            matrix(i, i) += matrix(k, i) * matrix(k, i);
+        }
+
+        for (size_t j = i + 1; j < Rows; ++j) {
+            T sum = static_cast<T>(0);
+            for (size_t k = j; k < Rows; ++k) {
+                sum += matrix(k, i) * matrix(k, j);
+            }
+            matrix(i, j) = sum;
+        }
+    }
+
+    for (size_t i = 0; i < Rows; ++i) {
+        for (size_t j = 0; j < i; ++j) {
+            matrix(i, j) = matrix(j, i);
+        }
+    }
+}
+
+template <typename T, size_t Rows, size_t Cols>
+T Matrix<T, Rows, Cols>::fastInverseSqrt(T value) {
+    if (value <= static_cast<T>(0)) {
+        return static_cast<T>(0);
+    }
+
+    if (sizeof(T) == sizeof(float)) {
+        union {
+            float f;
+            unsigned int i;
+        } conv;
+        conv.f = static_cast<float>(value);
+        float xhalf = conv.f * 0.5f;
+        conv.i = 0x5F3759DF - (conv.i >> 1);
+        conv.f = conv.f * (1.5f - xhalf * conv.f * conv.f);
+        return static_cast<T>(conv.f);
+    } else {
+        union {
+            double f;
+            unsigned long long i;
+        } conv;
+        conv.f = static_cast<double>(value);
+        double xhalf = conv.f * 0.5;
+        conv.i = 0x5fe6eb50c7b537a9ULL - (conv.i >> 1);
+        conv.f = conv.f * (1.5 - xhalf * conv.f * conv.f);
+        return static_cast<T>(conv.f);
+    }
+}
+
+template <typename T, size_t Rows, size_t Cols>
+T Matrix<T, Rows, Cols>::fastSqrt(T value) {
+    if (value <= static_cast<T>(0)) {
+        return static_cast<T>(0);
+    }
+    T inv = fastInverseSqrt(value);
+    return value * inv;
 }
 
 template <typename T, size_t Rows, size_t Cols>

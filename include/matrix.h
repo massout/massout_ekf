@@ -53,6 +53,14 @@ class Matrix {
     static void scaleRow(Matrix& matrix, size_t row, T scalar);
     static void subtractRow(Matrix& matrix, size_t target, size_t pivot,
                             T factor);
+    static bool tryCholeskyInverse(const Matrix& input, Matrix& out,
+                                   T epsilon);
+    static bool isSymmetricMatrix(const Matrix& matrix, T epsilon);
+    static bool choleskyDecompose(Matrix& matrix, T* diag, T epsilon);
+    static void choleskyInvertLower(Matrix& matrix, const T* diag);
+    static void choleskyCompleteInverse(Matrix& matrix);
+    static T fastInverseSqrt(T value);
+    static T fastSqrt(T value);
 
     T data_[kSize];
 };
