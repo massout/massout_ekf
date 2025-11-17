@@ -9,7 +9,8 @@ EXAMPLE_DIR := $(BUILD_DIR)/examples
 
 TEST_SOURCES := tests/constant_velocity.cpp \
                 tests/variable_acceleration.cpp \
-                tests/multiple_filters.cpp
+                tests/multiple_filters.cpp \
+                tests/value_access.cpp
 
 TEST_BINS := $(patsubst tests/%.cpp,$(TEST_DIR)/%,$(TEST_SOURCES))
 

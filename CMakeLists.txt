@@ -38,4 +38,8 @@ if (MASSOUT_EKF_BUILD_TESTS)
     add_executable(ekf_multiple_filters tests/multiple_filters.cpp)
     target_link_libraries(ekf_multiple_filters PRIVATE massout_ekf)
     add_test(NAME ekf_multiple_filters COMMAND ekf_multiple_filters)
+
+    add_executable(ekf_value_access tests/value_access.cpp)
+    target_link_libraries(ekf_value_access PRIVATE massout_ekf)
+    add_test(NAME ekf_value_access COMMAND ekf_value_access)
 endif()
