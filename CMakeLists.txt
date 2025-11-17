@@ -19,30 +19,8 @@ install(TARGETS massout_ekf
 install(DIRECTORY include/
         DESTINATION include)
 
-install(DIRECTORY src/massout_ekf/detail/
-        DESTINATION include/massout_ekf/detail)
-
 install(EXPORT massout_ekfTargets
         FILE massout_ekfTargets.cmake
-        DESTINATION lib/cmake/massout_ekf)
-
-include(CMakePackageConfigHelpers)
-
-write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/massout_ekfConfigVersion.cmake"
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion
-)
-
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/massout_ekfConfig.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/massout_ekfConfig.cmake
-    @ONLY
-)
-
-install(FILES
-            ${CMAKE_CURRENT_BINARY_DIR}/massout_ekfConfig.cmake
-            ${CMAKE_CURRENT_BINARY_DIR}/massout_ekfConfigVersion.cmake
         DESTINATION lib/cmake/massout_ekf)
 
 option(MASSOUT_EKF_BUILD_TESTS "Build massout_ekf tests" ON)
