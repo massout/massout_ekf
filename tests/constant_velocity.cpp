@@ -32,8 +32,7 @@ int main() {
     measurement_matrix(0, 0) = 1.0f;
     filter.setMeasurementMatrix(measurement_matrix);
 
-    TestFilter::MeasurementCovariance measurement_noise =
-        TestFilter::MeasurementCovariance::Identity();
+    TestFilter::MeasurementCovariance measurement_noise = TestFilter::MeasurementCovariance::Identity();
     measurement_noise *= 0.25f;
     filter.setMeasurementNoise(measurement_noise);
 
@@ -55,9 +54,10 @@ int main() {
         measurement(0, 0) = true_position;
 
         filter.predict(control);
+
         if (!filter.update(measurement)) {
-            std::printf("Innovation covariance was singular at step %d\n",
-                        step);
+            std::printf("Innovation covariance was singular at step %d\n", step);
+
             return 1;
         }
     }
@@ -66,14 +66,13 @@ int main() {
     float position_error = estimate(0, 0) - true_position;
     float velocity_error = estimate(1, 0) - true_velocity;
 
-    if (absoluteValue(position_error) > 0.1f ||
-        absoluteValue(velocity_error) > 0.2f) {
-        std::printf("EKF estimate error too large: position=%f velocity=%f\n",
-                    position_error, velocity_error);
+    if (absoluteValue(position_error) > 0.1f || absoluteValue(velocity_error) > 0.2f) {
+        std::printf("EKF estimate error too large: position=%f velocity=%f\n", position_error, velocity_error);
+
         return 1;
     }
 
-    std::printf("Final estimate position=%f velocity=%f\n", estimate(0, 0),
-                estimate(1, 0));
+    std::printf("Final estimate position=%f velocity=%f\n", estimate(0, 0), estimate(1, 0));
+    
     return 0;
 }

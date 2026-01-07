@@ -16,10 +16,8 @@ class ExtendedKalmanFilter {
     typedef Matrix<T, StateDim, MeasurementDim> GainMatrix;
     typedef Matrix<T, MeasurementDim, MeasurementDim> MeasurementCovariance;
 
-    typedef void (*ProcessModel)(const StateVector&, const ControlVector&,
-                                 StateVector&);
-    typedef void (*ProcessJacobian)(const StateVector&, const ControlVector&,
-                                    StateMatrix&);
+    typedef void (*ProcessModel)(const StateVector&, const ControlVector&, StateVector&);
+    typedef void (*ProcessJacobian)(const StateVector&, const ControlVector&, StateMatrix&);
     typedef void (*MeasurementModel)(const StateVector&, MeasurementVector&);
     typedef void (*MeasurementJacobian)(const StateVector&, MeasurementMatrix&);
 
@@ -50,18 +48,25 @@ class ExtendedKalmanFilter {
 
     void setStateValue(size_t row, size_t col, T value);
     T getStateValue(size_t row, size_t col) const;
+
     void setCovarianceValue(size_t row, size_t col, T value);
     T getCovarianceValue(size_t row, size_t col) const;
+
     void setProcessNoiseValue(size_t row, size_t col, T value);
     T getProcessNoiseValue(size_t row, size_t col) const;
+
     void setMeasurementNoiseValue(size_t row, size_t col, T value);
     T getMeasurementNoiseValue(size_t row, size_t col) const;
+
     void setTransitionValue(size_t row, size_t col, T value);
     T getTransitionValue(size_t row, size_t col) const;
+
     void setControlValue(size_t row, size_t col, T value);
     T getControlValue(size_t row, size_t col) const;
+
     void setMeasurementValue(size_t row, size_t col, T value);
     T getMeasurementValue(size_t row, size_t col) const;
+    
     T getKalmanGainValue(size_t row, size_t col) const;
 
     void setProcessModel(ProcessModel model);

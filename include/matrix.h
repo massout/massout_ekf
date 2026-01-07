@@ -40,8 +40,7 @@ class Matrix {
     Matrix& operator/=(T scalar);
 
     template <size_t OtherCols>
-    Matrix<T, Rows, OtherCols> operator*(
-        const Matrix<T, Cols, OtherCols>& rhs) const;
+    Matrix<T, Rows, OtherCols> operator*(const Matrix<T, Cols, OtherCols>& rhs) const;
 
     Matrix<T, Cols, Rows> transpose() const;
 
@@ -53,13 +52,13 @@ class Matrix {
     static T absolute(T value);
     static void swapRows(Matrix& matrix, size_t row_a, size_t row_b);
     static void scaleRow(Matrix& matrix, size_t row, T scalar);
-    static void subtractRow(Matrix& matrix, size_t target, size_t pivot,
-                            T factor);
+    static void subtractRow(Matrix& matrix, size_t target, size_t pivot, T factor);
     static bool tryCholeskyInverse(const Matrix& input, Matrix& out, T epsilon);
     static bool isSymmetricMatrix(const Matrix& matrix, T epsilon);
     static bool choleskyDecompose(Matrix& matrix, T* diag, T epsilon);
     static void choleskyInvertLower(Matrix& matrix, const T* diag);
     static void choleskyCompleteInverse(Matrix& matrix);
+    
     static T fastInverseSqrt(T value);
     static T fastSqrt(T value);
 
