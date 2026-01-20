@@ -254,8 +254,20 @@ bool ExtendedKalmanFilter<T, StateDim, MeasurementDim, ControlDim>::update(const
     kalman_gain_ = covariance_ * measurement_jacobian.transpose() * innovation_inverse;
 
     state_ = state_ + kalman_gain_ * innovation;
-    StateMatrix identity = StateMatrix::Identity();
-    covariance_ = (identity - kalman_gain_ * measurement_jacobian) * covariance_;
+
+    StateMatrix I = StateMatrix::Identity();
+    StateMatrix I_KH = I - kalman_gain_ * measurement_jacobian;
+
+    covariance_ = I_KH * covariance_ * I_KH.transpose() + kalman_gain_ * measurement_noise_ * kalman_gain_.transpose();
+ 
+    for (size_t r = 0; r < StateDim; ++r) {
+        for (size_t c = r + 1; c < StateDim; ++c) {
+            const T v = static_cast<T>(0.5) * (covariance_(r, c) + covariance_(c, r));
+            
+            covariance_(r, c) = v;
+            covariance_(c, r) = v;
+        }
+    }
     
     return true;
 }

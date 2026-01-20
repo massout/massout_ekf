@@ -22,14 +22,14 @@ Matrix<T, Rows, Cols>::Matrix(const Matrix& other) {
 
 template <typename T, size_t Rows, size_t Cols>
 void Matrix<T, Rows, Cols>::setZero() {
-    for (size_t i = 0; i < Rows * Cols; ++i) {
+    for (size_t i = 0; i < kSize; ++i) {
         data_[i] = static_cast<T>(0);
     }
 }
 
 template <typename T, size_t Rows, size_t Cols>
 void Matrix<T, Rows, Cols>::fill(T value) {
-    for (size_t i = 0; i < Rows * Cols; ++i) {
+    for (size_t i = 0; i < kSize; ++i) {
         data_[i] = value;
     }
 }
@@ -46,7 +46,7 @@ void Matrix<T, Rows, Cols>::assign(const T* values, size_t count) {
         data_[i] = values[i];
     }
 
-    for (size_t i = limit; i < Rows * Cols; ++i) {
+    for (size_t i = limit; i < kSize; ++i) {
         data_[i] = static_cast<T>(0);
     }
 }
@@ -467,7 +467,7 @@ T Matrix<T, Rows, Cols>::fastSqrt(T value) {
 template <typename T, size_t Rows, size_t Cols>
 Matrix<T, Rows, Cols>& Matrix<T, Rows, Cols>::operator=(const Matrix& rhs) {
     if (this != &rhs) {
-        for (size_t i = 0; i < Rows * Cols; ++i) {
+        for (size_t i = 0; i < kSize; ++i) {
             data_[i] = rhs.data_[i];
         }
     }
