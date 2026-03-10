@@ -1,4 +1,4 @@
-# Depo ana dalı `main` olduğu için buradaki hızlı komutlar doğrudan güncel kodla çalışır.
+# Depo ana dalı `master` olduğu için buradaki hızlı komutlar doğrudan güncel kodla çalışır.
 CXX ?= g++
 CXXFLAGS ?= -std=c++11 -Wall -Wextra -Iinclude -Isrc
 LDFLAGS ?=
