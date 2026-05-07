@@ -77,6 +77,7 @@ class ExtendedKalmanFilter {
     void predict();
     void predict(const ControlVector& control);
     bool update(const MeasurementVector& measurement);
+    bool updateSequential(const MeasurementVector& measurement, T epsilon = static_cast<T>(1e-6));
 
    private:
     StateVector state_;
@@ -93,3 +94,5 @@ class ExtendedKalmanFilter {
     MeasurementModel measurement_model_;
     MeasurementJacobian measurement_jacobian_;
 };
+
+#include "../src/ekf.cpp"

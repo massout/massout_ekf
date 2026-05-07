@@ -223,6 +223,74 @@ void ExtendedKalmanFilter<T, StateDim, MeasurementDim, ControlDim>::predict(cons
 }
 
 template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
+bool ExtendedKalmanFilter<T, StateDim, MeasurementDim, ControlDim>::updateSequential(const MeasurementVector& measurement, T epsilon) {
+    kalman_gain_.setZero();
+
+    for (size_t i = 0; i < MeasurementDim; ++i) {
+        MeasurementVector expected_measurement;
+
+        if (measurement_model_) {
+            measurement_model_(state_, expected_measurement);
+        } else {
+            expected_measurement = measurement_matrix_ * state_;
+        }
+
+        MeasurementMatrix measurement_jacobian;
+
+        if (measurement_jacobian_) {
+            measurement_jacobian_(state_, measurement_jacobian);
+        } else {
+            measurement_jacobian = measurement_matrix_;
+        }
+
+        Matrix<T, 1, StateDim> h_row;
+
+        for (size_t c = 0; c < StateDim; ++c) {
+            h_row(0, c) = measurement_jacobian(i, c);
+        }
+
+        Matrix<T, StateDim, 1> p_h_t = covariance_ * h_row.transpose();
+        T s = static_cast<T>(0);
+
+        for (size_t c = 0; c < StateDim; ++c) {
+            s += h_row(0, c) * p_h_t(c, 0);
+        }
+
+        const T measurement_noise = measurement_noise_(i, i);
+        s += measurement_noise;
+
+        if (s <= epsilon) {
+            return false;
+        }
+
+        Matrix<T, StateDim, 1> k = p_h_t / s;
+        T innovation = measurement(i, 0) - expected_measurement(i, 0);
+
+        state_ += k * innovation;
+
+        Matrix<T, StateDim, StateDim> I = StateMatrix::Identity();
+        Matrix<T, StateDim, StateDim> I_KH = I - (k * h_row);
+
+        covariance_ = I_KH * covariance_ * I_KH.transpose() + (k * k.transpose()) * measurement_noise;
+
+        for (size_t r = 0; r < StateDim; ++r) {
+            for (size_t c = r + 1; c < StateDim; ++c) {
+                const T v = static_cast<T>(0.5) * (covariance_(r, c) + covariance_(c, r));
+
+                covariance_(r, c) = v;
+                covariance_(c, r) = v;
+            }
+        }
+
+        for (size_t r = 0; r < StateDim; ++r) {
+            kalman_gain_(r, i) = k(r, 0);
+        }
+    }
+
+    return true;
+}
+
+template <typename T, size_t StateDim, size_t MeasurementDim, size_t ControlDim>
 bool ExtendedKalmanFilter<T, StateDim, MeasurementDim, ControlDim>::update(const MeasurementVector& measurement) {
     MeasurementVector expected_measurement;
 

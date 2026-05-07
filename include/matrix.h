@@ -67,3 +67,5 @@ class Matrix {
 
 template <typename T, size_t Rows, size_t Cols>
 Matrix<T, Rows, Cols> operator*(T scalar, const Matrix<T, Rows, Cols>& matrix);
+
+#include "../src/matrix.cpp"
